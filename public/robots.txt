@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://github-portfolio-delta-ruby.vercel.app/sitemap.xml
+
+# Block nothing — this is a public portfolio.
