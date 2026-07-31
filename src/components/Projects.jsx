@@ -43,10 +43,34 @@ export default function Projects() {
         return r.json()
       })
       .then((data) => {
-        const sorted = data
-          .filter((r) => !r.fork)
-          .sort((a, b) => (b.stargazers_count - a.stargazers_count) || new Date(b.updated_at) - new Date(a.updated_at))
-        setRepos(sorted)
+        // Auto-filter:
+        // 1) skip forks (other people's work)
+        // 2) skip repos without description (drafts / experiments)
+        // 3) skip the portfolio site itself (this repo)
+        // 4) skip archived repos
+        const selfRepo = `${content.githubUsername}/`.toLowerCase() + 'github-portfolio'
+        const featured = (content.featuredRepos || []).map((n) => n.toLowerCase())
+
+        const filtered = data.filter((r) => {
+          if (r.fork) return false
+          if (r.archived) return false
+          if (!r.description || !r.description.trim()) return false
+          if (r.full_name.toLowerCase() === selfRepo) return false
+          return true
+        })
+
+        // Sort: featured (manual allowlist) first, then by stars, then by recency
+        const sorted = filtered.sort((a, b) => {
+          const aFeat = featured.includes(a.name.toLowerCase()) ? 1 : 0
+          const bFeat = featured.includes(b.name.toLowerCase()) ? 1 : 0
+          if (aFeat !== bFeat) return bFeat - aFeat
+          return (b.stargazers_count - a.stargazers_count)
+            || new Date(b.updated_at) - new Date(a.updated_at)
+        })
+
+        // Limit to 6 (override via content.maxProjects if you want more/fewer)
+        const limit = content.maxProjects || 6
+        setRepos(sorted.slice(0, limit))
         setLoading(false)
       })
       .catch((e) => {
@@ -68,8 +92,8 @@ export default function Projects() {
           на GitHub
         </h2>
         <p className="font-display font-light text-lg mt-6 max-w-2xl opacity-70">
-          Репозитории подтягиваются автоматически с GitHub. Каждый новый проект
-          появляется здесь сам — без правок кода.
+          Избранные работы с GitHub — без черновиков и форков.
+          Репозитории с описанием подтягиваются автоматически, лучшие закреплены сверху.
         </p>
       </div>
 

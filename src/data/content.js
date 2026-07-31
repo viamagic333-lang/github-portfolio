@@ -7,6 +7,11 @@ export const content = {
   location: 'Принимаю заказы по всему миру',
   available: true,
   githubUsername: 'viamagic333-lang',
+  // Optional: pin specific repos to the top of the Projects grid (by repo name).
+  // Empty = pure auto-filter (stars + recency).
+  featuredRepos: ['cursor-skills'],
+  // Optional: how many projects to show in the grid (default 6).
+  maxProjects: 6,
   bio: `Я фрилансер, специализирующийся на веб-разработке и AI-агентах.
 Делаю сайты, скрипты, Cursor-скиллы, автоматизации. Работаю быстро,
 пишу чистый код, документирую каждую работу — чтобы клиент мог
